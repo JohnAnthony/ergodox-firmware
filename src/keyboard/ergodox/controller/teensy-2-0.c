@@ -24,7 +24,7 @@
 
 // check options
 #if  (TEENSY__DRIVE_ROWS && TEENSY__DRIVE_COLUMNS)	\
- || !(TEENSY__DRIVE_ROWS || TEENSY__DRIVE_COLUMNS)
+	|| !(TEENSY__DRIVE_ROWS || TEENSY__DRIVE_COLUMNS)
 	#error "See 'Pin drive direction' in 'options.h'"
 #endif
 // ----------------------------------------------------------------------------

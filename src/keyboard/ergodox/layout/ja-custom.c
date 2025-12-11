@@ -7,7 +7,7 @@
 #include "../matrix.h"
 #include "../layout.h"
 
-#define FREE 0 
+#define FREE 0
 
 // basic
 #define  kprrel  &kbfun_press_release
@@ -30,22 +30,22 @@ const uint8_t PROGMEM _kb_layout[KB_LAYERS][KB_ROWS][KB_COLUMNS] = {
 // unused
 0,
 // left hand
-    _grave,               _1,    _2,    _3,     _4,    _5,    FREE,
+    _grave,               _1,    _2,    _3,     _4,    _5,    _home,
       _tab,               _Q,    _W,    _E,     _R,    _T,    1,
       _esc,               _A,    _S,    _D,     _F,    _G,
-   _shiftL,               _Z,    _X,    _C,     _V,    _B,    FREE,
+   _shiftL,               _Z,    _X,    _C,     _V,    _B,    _end,
     _ctrlL, _backslash_nonUS, _altL, _dash, _equal,
-                                                  _del, _pageU,
-                                                  0, 0, _pageD,
+                                                  _del,   FREE,
+                                                  0, 0,   FREE,
                                            _space, _bs,  _guiL,
 // right hand
-     FREE, _6,      _7,      _8,      _9,           _0,      FREE,
+   _pageU, _6,      _7,      _8,      _9,           _0,      FREE,
 _bracketL, _Y,      _U,      _I,      _O,           _P,      FREE,
            _H,      _J,      _K,      _L,   _semicolon,    _quote,
-     FREE, _N,      _M,  _comma, _period,       _slash,   _shiftR,
+   _pageD, _N,      _M,  _comma, _period,       _slash,   _shiftR,
              _bracketL, _bracketR, _altR, _pound_nonUS,    _ctrlR,
-_pageU, _insert,
-_pageD,       0, 0,
+  FREE, _insert,
+  FREE,       0, 0,
  _guiR,  _enter, _space ),
 
 

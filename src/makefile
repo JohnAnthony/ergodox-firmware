@@ -153,7 +153,7 @@ clean:
 %.o: %.c
 	@echo
 	@echo --- making $@ ---
-	$(CC) -c $(strip $(CFLAGS)) $(strip $(GENDEPFLAGS)) $< -o $@ 
+	$(CC) -c $(strip $(CFLAGS)) $(strip $(GENDEPFLAGS)) $< -o $@
 
 # -----------------------------------------------------------------------------
 
