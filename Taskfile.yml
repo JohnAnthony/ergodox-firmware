@@ -1,0 +1,36 @@
+version: '3'
+
+vars:
+  HEX: firmware.hex
+  FORMAT: ihex
+  MCU: atmega32u4
+
+tasks:
+  build:
+    desc: Compile firmware to {{.HEX}}
+    cmds:
+      - make
+    sources:
+      - '*.c'
+      - '*.h'
+      - Makefile
+    generates:
+      - '{{.HEX}}'
+      - firmware.eep
+
+  flash:
+    desc: Flash firmware.hex to Teensy 2.0 (hold reset button first)
+    deps: [build]
+    cmds:
+      - teensy_loader_cli -w --mcu TEENSY2 {{.HEX}}
+
+  size:
+    desc: Show firmware flash/RAM usage
+    deps: [build]
+    cmds:
+      - avr-size --mcu={{.MCU}} --format=avr {{.HEX}}
+
+  clean:
+    desc: Remove all build artifacts
+    cmds:
+      - make clean
