@@ -86,6 +86,8 @@ int main(void) {
 		usb_extra_consumer_send();
 		_delay_ms(MAKEFILE_DEBOUNCE_TIME);
 
+		// D6 onboard LED mirrors layer state
+		if (main_layers_peek(0) != 0) { PORTD |= (1<<6); } else { PORTD &= ~(1<<6); }
 		if (keyboard_leds & (1<<0)) { kb_led_num_on();    } else { kb_led_num_off();    }
 		if (keyboard_leds & (1<<1)) { kb_led_caps_on();   } else { kb_led_caps_off();   }
 		if (keyboard_leds & (1<<2)) { kb_led_scroll_on(); } else { kb_led_scroll_off(); }

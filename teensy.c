@@ -90,8 +90,9 @@
 uint8_t teensy_init(void) {
 	CPU_PRESCALE(CPU_16MHz);
 
-	// Onboard LEDs — tied to GND/Vcc for hardware convenience, disable
-	DDRD  &= ~(1<<6); PORTD &= ~(1<<6);
+	// D6 is the Teensy 2.0 onboard LED, used as layer indicator — set as output, start off
+	DDRD  |=  (1<<6); PORTD &= ~(1<<6);
+	// B4 is tied to Vcc on the ErgoDox PCB — keep as input to avoid short
 	DDRB  &= ~(1<<4); PORTB &= ~(1<<4);
 
 	// Keyboard LEDs: fast PWM on OC1A/B/C

@@ -1,2 +1,5 @@
-twi.o: twi.c twi.h
+teensy.o: teensy.c layout.h keycodes.h teensy.h twi.h
+layout.h:
+keycodes.h:
+teensy.h:
 twi.h:
