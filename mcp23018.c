@@ -59,39 +59,36 @@ out:
 	return ret;
 }
 
+static bool mcp23018_ready = false;
+
 uint8_t mcp23018_update_matrix(bool matrix[KB_ROWS][KB_COLUMNS]) {
 	uint8_t ret, data;
 
-	ret = mcp23018_init();
-	if (ret) {
-		for (uint8_t row = 0; row <= 5; row++)
-			for (uint8_t col = 0; col <= 6; col++)
-				matrix[row][col] = 0;
-		return ret;
+	if (!mcp23018_ready) {
+		ret = mcp23018_init();
+		if (ret) goto zero_matrix;
+		mcp23018_ready = true;
 	}
 
 	for (uint8_t col = 0; col <= 6; col++) {
-		// Drive active column low, all others hi-Z
 		twi_start();
-		twi_send(TWI_ADDR_WRITE);
-		twi_send(GPIOA);
-		twi_send(0xFF & ~(1<<col));
+		ret  = twi_send(TWI_ADDR_WRITE); if (ret) goto scan_error;
+		ret  = twi_send(GPIOA);          if (ret) goto scan_error;
+		ret  = twi_send(0xFF & ~(1<<col)); if (ret) goto scan_error;
 		twi_stop();
 
-		// Read row data
 		twi_start();
-		twi_send(TWI_ADDR_WRITE);
-		twi_send(GPIOB);
+		ret  = twi_send(TWI_ADDR_WRITE); if (ret) goto scan_error;
+		ret  = twi_send(GPIOB);          if (ret) goto scan_error;
 		twi_start();
-		twi_send(TWI_ADDR_READ);
-		twi_read(&data);
+		ret  = twi_send(TWI_ADDR_READ);  if (ret) goto scan_error;
+		ret  = twi_read(&data);          if (ret) goto scan_error;
 		twi_stop();
 
 		for (uint8_t row = 0; row <= 5; row++)
 			matrix[row][col] = !(data & (1<<(5-row)));
 	}
 
-	// Return all columns hi-Z
 	twi_start();
 	twi_send(TWI_ADDR_WRITE);
 	twi_send(GPIOA);
@@ -99,4 +96,13 @@ uint8_t mcp23018_update_matrix(bool matrix[KB_ROWS][KB_COLUMNS]) {
 	twi_stop();
 
 	return 0;
+
+scan_error:
+	twi_stop();
+	mcp23018_ready = false;
+zero_matrix:
+	for (uint8_t row = 0; row <= 5; row++)
+		for (uint8_t col = 0; col <= 6; col++)
+			matrix[row][col] = 0;
+	return ret;
 }

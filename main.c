@@ -27,12 +27,10 @@ uint8_t main_arg_row;
 uint8_t main_arg_col;
 bool    main_arg_is_pressed;
 bool    main_arg_was_pressed;
-bool    main_arg_any_non_trans_key_pressed;
 bool    main_arg_trans_key_pressed;
 
 int main(void) {
 	teensy_init();
-	mcp23018_init();
 
 	kb_led_state_power_on();
 
@@ -103,7 +101,6 @@ int main(void) {
 struct layer_entry {
 	uint8_t layer;
 	uint8_t id;
-	uint8_t sticky;
 };
 
 static struct layer_entry layers[MAX_ACTIVE_LAYERS];
@@ -118,9 +115,6 @@ void main_exec_key(void) {
 
 	if (key_function)
 		(*key_function)();
-
-	if (layers[layers_head].sticky == eStickyOnceUp && main_arg_any_non_trans_key_pressed)
-		main_layers_pop_id(layers_head);
 }
 
 uint8_t main_layers_peek(uint8_t offset) {
@@ -129,20 +123,13 @@ uint8_t main_layers_peek(uint8_t offset) {
 	return 0;
 }
 
-uint8_t main_layers_peek_sticky(uint8_t offset) {
-	if (offset <= layers_head)
-		return layers[layers_head - offset].sticky;
-	return 0;
-}
-
-uint8_t main_layers_push(uint8_t layer, uint8_t sticky) {
+uint8_t main_layers_push(uint8_t layer) {
 	for (uint8_t id = 1; id < MAX_ACTIVE_LAYERS; id++) {
 		if (!layers_ids_in_use[id]) {
 			layers_ids_in_use[id] = true;
 			layers_head++;
-			layers[layers_head].layer  = layer;
-			layers[layers_head].id     = id;
-			layers[layers_head].sticky = sticky;
+			layers[layers_head].layer = layer;
+			layers[layers_head].id    = id;
 			return id;
 		}
 	}
@@ -153,13 +140,11 @@ void main_layers_pop_id(uint8_t id) {
 	for (uint8_t i = 1; i <= layers_head; i++) {
 		if (layers[i].id == id) {
 			for (; i < layers_head; i++) {
-				layers[i].layer  = layers[i+1].layer;
-				layers[i].id     = layers[i+1].id;
-				layers[i].sticky = layers[i+1].sticky;
+				layers[i].layer = layers[i+1].layer;
+				layers[i].id    = layers[i+1].id;
 			}
-			layers[layers_head].layer  = 0;
-			layers[layers_head].id     = 0;
-			layers[layers_head].sticky = 0;
+			layers[layers_head].layer = 0;
+			layers[layers_head].id    = 0;
 			layers_ids_in_use[id] = false;
 			layers_head--;
 			return;

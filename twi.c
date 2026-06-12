@@ -47,12 +47,12 @@ uint8_t twi_send(uint8_t data) {
 }
 
 uint8_t twi_read(uint8_t *data) {
-	TWCR = (1<<TWINT) | (1<<TWEN) | (1<<TWEA);
+	TWCR = (1<<TWINT) | (1<<TWEN);  // no TWEA = NACK, signalling last byte
 	uint16_t t = TWI_TIMEOUT;
 	while (!(TWCR & (1<<TWINT)) && --t);
 	if (!t) { twi_reset(); return 0xFF; }
 	*data = TWDR;
-	if (TW_STATUS != TW_MR_DATA_ACK)
+	if (TW_STATUS != TW_MR_DATA_NACK)
 		return TW_STATUS;
 	return 0;
 }

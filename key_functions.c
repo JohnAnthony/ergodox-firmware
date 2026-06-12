@@ -55,15 +55,9 @@ bool _kbfun_is_pressed(uint8_t keycode) {
 
 // --- Key functions used by the layout ---
 
-void kbfun_press_release_preserve_sticky(void) {
+void kbfun_press_release(void) {
 	uint8_t keycode = kb_layout_get(LAYER, ROW, COL);
 	_kbfun_press_release(IS_PRESSED, keycode);
-}
-
-void kbfun_press_release(void) {
-	if (!main_arg_trans_key_pressed)
-		main_arg_any_non_trans_key_pressed = true;
-	kbfun_press_release_preserve_sticky();
 }
 
 void kbfun_transparent(void) {
@@ -80,10 +74,7 @@ static uint8_t layer_id_1 = 0;
 void kbfun_layer_push_1(void) {
 	uint8_t keycode = kb_layout_get(LAYER, ROW, COL);
 	if (layer_id_1) { main_layers_pop_id(layer_id_1); layer_id_1 = 0; }
-	uint8_t topSticky = main_layers_peek_sticky(0);
-	if (topSticky == eStickyOnceDown || topSticky == eStickyOnceUp)
-		main_layers_pop_id(main_layers_peek(0));
-	layer_id_1 = main_layers_push(keycode, eStickyNone);
+	layer_id_1 = main_layers_push(keycode);
 }
 
 void kbfun_layer_pop_1(void) {
