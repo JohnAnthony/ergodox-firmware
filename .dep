@@ -1,5 +1,5 @@
-teensy.o: teensy.c layout.h keycodes.h teensy.h twi.h
+layout.o: layout.c layout.h keycodes.h key_functions.h main.h
 layout.h:
 keycodes.h:
-teensy.h:
-twi.h:
+key_functions.h:
+main.h:
